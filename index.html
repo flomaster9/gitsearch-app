@@ -12,8 +12,10 @@
 			@get_search_params = 'setSearchParams'>
 		</searcher-component>
 
-		{{currentView}}
-		<component v-bind:is="currentView"></component>
+		<component 
+			:is="currentView"
+			:items='items'>
+		</component>
 
 	</div>
 

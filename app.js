@@ -7538,6 +7538,48 @@ exports.insert = function (css) {
 
 },{}],6:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
+var __vueify_style__ = __vueify_insert__.insert("\n\n")
+
+
+
+
+
+
+
+
+module.exports = {
+	props: ['items'],
+	data: function() {
+		return {
+			
+		}
+	},
+	methods: {
+
+	},
+	created: function() {
+		
+	}
+}
+
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"repositories\">\n\t<h2>repositories:</h2>\n\t{{items}}\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  module.hot.dispose(function () {
+    __vueify_insert__.cache["\n\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-3daf199c", module.exports)
+  } else {
+    hotAPI.update("_v-3daf199c", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":4,"vue-hot-reload-api":2,"vueify/lib/insert-css":5}],7:[function(require,module,exports){
+var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\nspan{\n\tmargin:10px 0px 5px 0;\n\tdisplay: inline-block;\n}\n")
 
 
@@ -7584,7 +7626,7 @@ module.exports = {
 				value: 'users',
 				input: '',
 				language: '',
-				fields: [],
+				fields: ['login', 'fullname'],
 				sorts: [],
 			},
 		}
@@ -7596,8 +7638,10 @@ module.exports = {
 		setDefaultParams: function() {
 			this.search_params.input = '';
 			this.search_params.language = '';
-			this.search_params.fields = [];
-			this.search_params.sorts = [];
+			if (this.search_params.value == 'users')
+				this.search_params.fields = ['login', 'fullname']
+			else if (this.search_params.value == 'repositories')
+				this.search_params.fields = ['name', 'description']
 		}
 	}
 }
@@ -7618,22 +7662,182 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-0e99449f", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":4,"vue-hot-reload-api":2,"vueify/lib/insert-css":5}],7:[function(require,module,exports){
+},{"vue":4,"vue-hot-reload-api":2,"vueify/lib/insert-css":5}],8:[function(require,module,exports){
+var __vueify_insert__ = require("vueify/lib/insert-css")
+var __vueify_style__ = __vueify_insert__.insert("\n\n.repo-items-container{\n\tdisplay: -webkit-box;\n\tdisplay: -ms-flexbox;\n\tdisplay: flex;\n}\n.list-container{\n\twidth: 50%;\n}\n\n.up{\n\tcolor: green;\n}\n\n.down{\n\tcolor: red;\n}\n\n.active{\n\tbackground-color: #dddddd;\n}\n\n")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+module.exports = {
+	props: ['items'],
+	data: function() {
+		return {
+			repos: [],
+			commits: [],
+			branches: [],
+			cur_user: null,
+			cur_repo: null,
+		}
+	},
+	methods: {
+		findCurUser: function(index) {
+			this.cur_user = this.items[index];
+			this.cur_user.index = index; 
+		},
+
+		getUserRepos: function(self) {
+			$.ajax({
+			  	url: self.cur_user.repos_url
+			})
+		  	.done(function( msg ) {
+		    	self.repos = msg;
+			});
+		},
+
+		findUserRepos: function(event, index) {
+			this.branches = this.commits  = this.cur_user = this.cur_repo = this.repos = null;
+			this.findCurUser(index);
+			this.getUserRepos(this);
+		},
+
+		findCurRepo: function(index) {
+			this.cur_repo = this.repos[index];
+			this.cur_repo.index = index; 
+		},
+
+		getRepoCommits: function(self) {
+			$.ajax({
+			  	url: self.cur_repo.commits_url	//удаляю {/sha}
+					.substr(0, self.cur_repo.commits_url.length-6)
+			})
+		  	.done(function( msg ) {
+		    	self.commits = msg;
+			});
+		},
+
+		getRepoBranches: function(self) {
+			$.ajax({
+			  	url: self.cur_repo.branches_url	//удаляю {/branch}}
+					.substr(0, self.cur_repo.branches_url.length-9)
+			})
+		  	.done(function( msg ) {
+		    	self.branches = msg;
+			});
+		},
+
+		findRepoItems: function(event, index) {
+			this.branches = this.commits = null;
+			this.findCurRepo(index);
+			this.getRepoCommits(this);
+			this.getRepoBranches(this);
+		},
+		sortCommitsByDate: function(event, reverse) {
+			this.commits.sort((a, b) => {
+				if (!!reverse)
+					return a.commit.author.date < b.commit.author.date ? 1 : -1;
+				else
+					return a.commit.author.date > b.commit.author.date ? 1 : -1;
+			})
+		},
+		sortCommitsByMsg: function(event, reverse) {
+			if (!!reverse) 
+				this.commits.sort((a, b) => {
+					return a.commit.message.toLowerCase() > b.commit.message.toLowerCase() ? 1 : -1;
+				})	
+			else
+				this.commits.sort((a, b) => {
+					return a.commit.message.toLowerCase() < b.commit.message.toLowerCase() ? 1 : -1;
+				})
+		},
+	},
+}
+
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"users\">\n\t<h2>user:</h2>\n\t<ul class=\"users-list\">\n\t\t<li v-for=\"(user, user_index) in items\" class=\"user-item\" @click.self=\"findUserRepos(event, user_index)\">\n\t\t\t{{user.login}}\n\t\t\t<ul class=\"repos-list active\" v-if=\"cur_user &amp;&amp; (cur_user.index == user_index)\">\n\t\t\t\t<h3>repos:</h3>\n\t\t\t\t<li class=\"repo-item\" v-for=\"(repo, repo_index) in repos\" @click.self=\"findRepoItems(event, repo_index)\">\n\t\t\t\t\t{{repo.name}}\n\t\t\t\t\t<div class=\"repo-items-container active\" v-if=\"cur_repo &amp;&amp; (cur_repo.index == repo_index)\">\n\t\t\t\t\t\t<div class=\"commits list-container\">\n\t\t\t\t\t\t\t<h3>commits:</h3>\n\t\t\t\t\t\t\t<p>\n\t\t\t\t\t\t\t\t<span> Sort by date</span> \n\t\t\t\t\t\t\t\t<span class=\"up\" @click.self=\"sortCommitsByDate()\">UP</span> \n\t\t\t\t\t\t\t\t<span class=\"down\" @click.self=\"sortCommitsByDate(event, &quot;reverse&quot;)\">DOWN</span> \n\t\t\t\t\t\t\t\t<span> | Sort by msg:</span> \n\t\t\t\t\t\t\t\t<span class=\"up\" @click.self=\"sortCommitsByMsg()\">UP</span> \n\t\t\t\t\t\t\t\t<span class=\"down\" @click.self=\"sortCommitsByMsg(event, &quot;reverse&quot;)\">DOWN</span> \n\t\t\t\t\t\t\t</p>\n\t\t\t\t\t\t\t<ul class=\"commit-list\">\n\t\t\t\t\t\t\t\t<li class=\"commit-item\" v-for=\"item in commits\">\n\t\t\t\t\t\t\t\t\t{{item.author.login}} -- {{item.commit.message}} -- {{item.commit.author.date}}\n\t\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<div class=\"branches list-container\">\n\t\t\t\t\t\t\t<h3>branches:</h3>\n\t\t\t\t\t\t\t<ul class=\"branches-list\">\n\t\t\t\t\t\t\t\t<li class=\"branch-item\" v-for=\"branch in branches\">\n\t\t\t\t\t\t\t\t\t{{branch.name}}\n\t\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</li>\n\t\t\t</ul>\n\t\t</li>\n\t</ul>\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  module.hot.dispose(function () {
+    __vueify_insert__.cache["\n\n.repo-items-container{\n\tdisplay: -webkit-box;\n\tdisplay: -ms-flexbox;\n\tdisplay: flex;\n}\n.list-container{\n\twidth: 50%;\n}\n\n.up{\n\tcolor: green;\n}\n\n.down{\n\tcolor: red;\n}\n\n.active{\n\tbackground-color: #dddddd;\n}\n\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-075c9dae", module.exports)
+  } else {
+    hotAPI.update("_v-075c9dae", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":4,"vue-hot-reload-api":2,"vueify/lib/insert-css":5}],9:[function(require,module,exports){
 var Vue = require('../node_modules/vue/dist/vue.min.js');
 var search = require('./modules/search.js');
 var searcherComponent = require('./components/searcher.js');
+var repositories = require('./components/repositories.js');
+var users = require('./components/users.js');
 
 var app = new Vue({
 	el: '.app',
 
 	components: {
 		searcherComponent: searcherComponent,
+		repositories: repositories,
+		users: users,
 	},
 
 	data: {
 		search_params: {},
-		users: null,
-		repositories: null,
+		items: null,
+		currentView: null,
 	},
 
 	methods: {
@@ -7642,18 +7846,12 @@ var app = new Vue({
 			search();
 		},
 	},
-	computed:{
-		currentView: function() {
-			return this.users ? 'users' : 
-				this.repositories ? 'repositories' : null; 
-		}
-	},
 	created: function() {
 		search = search(this);
 	}
 })
 
-},{"../node_modules/vue/dist/vue.min.js":3,"./components/searcher.js":6,"./modules/search.js":8}],8:[function(require,module,exports){
+},{"../node_modules/vue/dist/vue.min.js":3,"./components/repositories.js":6,"./components/searcher.js":7,"./components/users.js":8,"./modules/search.js":10}],10:[function(require,module,exports){
 module.exports = function(app) {
 
 	var fields = '';
@@ -7662,8 +7860,7 @@ module.exports = function(app) {
 
 	var paramsConstructor = function() {
 
-		app.users = null;
-		app.repositories = null;
+		app.currentView = null;
 
 		fields = '+in:' + (app.search_params.fields.length > 0 ? app.search_params.fields.join('|') : 1);
 		language = '+language:' + (app.search_params.language != '' ? app.search_params.language : 1);
@@ -7677,17 +7874,15 @@ module.exports = function(app) {
 	var findInfo = function() {
 		$.ajax({
 			//https://api.github.com/search/users?q=INPUT+in:login|fullname+language:0
-		  	method: "GET",
 		  	url: 'https://api.github.com/search/' 
 		  			+ app.search_params.value + '?q=' 
 		  								+ app.search_params.input 
 		  									+ fields  + sorts  + language
 		})
 	  	.done(function(msg) {
-	   		if (app.search_params.value == 'users') 
-	   			app.users = msg.items;
-	   		else if (app.search_params.value == 'repositories') 
-	   			app.repositories = msg.items;
+	   		app.items = msg.items;
+	   		app.currentView = app.search_params.value == 'users' ? 
+	  			 'users' : 'repositories'; 
 		});
 	}
 
@@ -7696,4 +7891,4 @@ module.exports = function(app) {
 		findInfo();
 	}
 }
-},{}]},{},[7])
+},{}]},{},[9])

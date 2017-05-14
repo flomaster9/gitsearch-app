@@ -43,7 +43,7 @@
 					value: 'users',
 					input: '',
 					language: '',
-					fields: [],
+					fields: ['login', 'fullname'],
 					sorts: [],
 				},
 			}
@@ -55,8 +55,10 @@
 			setDefaultParams: function() {
 				this.search_params.input = '';
 				this.search_params.language = '';
-				this.search_params.fields = [];
-				this.search_params.sorts = [];
+				if (this.search_params.value == 'users')
+					this.search_params.fields = ['login', 'fullname']
+				else if (this.search_params.value == 'repositories')
+					this.search_params.fields = ['name', 'description']
 			}
 		}
 	}

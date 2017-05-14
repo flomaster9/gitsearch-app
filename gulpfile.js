@@ -18,13 +18,13 @@ gulp.task('build-vue', function() {
 });
 
 gulp.task('watcher',['build-vue', 'build-js'], function() {
+    gulp.watch('./components/**/*.vue', ['build-vue']);
     gulp.watch('./scripts/**/*.js', ['build-js']);
-      gulp.watch('./components/**/*.vue', ['build-vue']);
     gulp.watch('./index.html').on('change', browserSync.reload);
     gulp.watch('./app.js').on('change', browserSync.reload);
 });
 
-gulp.task('serve',['watcher'], function() {
+gulp.task('serve',['build-vue', 'watcher'], function() {
     browserSync.init({
         server: {
             baseDir: './',
