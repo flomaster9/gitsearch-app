@@ -1,5 +1,5 @@
 var __vueify_insert__ = require("vueify/lib/insert-css")
-var __vueify_style__ = __vueify_insert__.insert("\n\n.repo-items-container{\n\tdisplay: -webkit-box;\n\tdisplay: -ms-flexbox;\n\tdisplay: flex;\n}\n.list-container{\n\twidth: 50%;\n}\n\n.up{\n\tcolor: green;\n}\n\n.down{\n\tcolor: red;\n}\n\n.active{\n\tbackground-color: #dddddd;\n}\n\n")
+var __vueify_style__ = __vueify_insert__.insert("\n\n\n\n")
 
 
 
@@ -61,7 +61,7 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   module.hot.dispose(function () {
-    __vueify_insert__.cache["\n\n.repo-items-container{\n\tdisplay: -webkit-box;\n\tdisplay: -ms-flexbox;\n\tdisplay: flex;\n}\n.list-container{\n\twidth: 50%;\n}\n\n.up{\n\tcolor: green;\n}\n\n.down{\n\tcolor: red;\n}\n\n.active{\n\tbackground-color: #dddddd;\n}\n\n"] = false
+    __vueify_insert__.cache["\n\n\n\n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {

@@ -3,7 +3,7 @@ var search = require('./modules/search.js');
 var searcherComponent = require('./components/searcher.js');
 var repositories = require('./components/repositories.js');
 var users = require('./components/users.js');
-var repos = require('./components/repos.js');
+var innerRepos = require('./components/inner-repos.js');
 
 var app = new Vue({
 	el: '.app',
@@ -12,7 +12,7 @@ var app = new Vue({
 		searcherComponent: searcherComponent,
 		repositories: repositories,
 		users: users,
-		repos: repos,
+		innerRepos: innerRepos,
 	},
 
 	data: {

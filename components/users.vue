@@ -55,23 +55,6 @@
 
 <style>
 
-	.repo-items-container{
-		display: flex;
-	}
-	.list-container{
-		width: 50%;
-	}
-
-	.up{
-		color: green;
-	}
-
-	.down{
-		color: red;
-	}
-
-	.active{
-		background-color: #dddddd;
-	}
+	
 	
 </style>

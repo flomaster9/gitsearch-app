@@ -18,10 +18,11 @@
 			:is="currentView"
 			:items='items'>
 			
-			<repos v-if='repos && repos.length != 0'
+			<inner-repos v-if='repos && repos.length != 0'
 			 	 :repos='repos'
-			 	 slot='repos'>	
-			</repos>
+			 	 :current-view='currentView'
+			 	 slot='repos'>
+			</inner-repos>
 			
 		</component>
 

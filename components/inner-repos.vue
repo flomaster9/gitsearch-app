@@ -3,7 +3,7 @@
 		<li class="repo-item" 
 		v-for='(repo, repo_index) in repos'
 		@click.self='findRepoItems(event, repo_index)'>
-		{{repo.name}}
+		{{repo.name}} <span v-if='currentView.trim() != "users"'>-- ({{repo.owner.login}})</span>
 			<div class="repo-items-container active"
 				v-if='cur_repo && (cur_repo.index == repo_index)'>
 				<div class="commits list-container">
@@ -16,12 +16,18 @@
 						<span class="up" @click.self='sortCommitsByMsg()'>UP</span> 
 						<span class="down" @click.self='sortCommitsByMsg(event, "reverse")'>DOWN</span> 
 					</p>
-					<ul class="commit-list">
-						<li class="commit-item" 
-							v-for='item in commits'>
-							{{item.author.login}}  {{item.commit.message}}  {{item.commit.author.date}}
-						</li>
-					</ul>
+					<table class="commit-table">
+						<tr>
+							<th>Author</th>
+							<th>Message</th>
+							<th>date</th>
+						</tr>
+						<tr v-for='item in commits'>
+							<td class="author">{{item.author.login}}</td>
+							<td class="msg">{{item.commit.message}}</td>
+							<td class="date">{{item.commit.author.date}}</td>
+						</tr>
+					</table>
 				</div>
 
 				<div class="branches list-container">
@@ -40,7 +46,7 @@
 
 <script>
 	module.exports = {
-		props: ['repos'],
+		props: ['repos', 'currentView'],
 		data: function() {
 			return {
 				commits: [],
@@ -101,3 +107,41 @@
 		},
 	}
 </script>
+
+
+<style>
+
+	.repo-items-container{
+		display: flex;
+	}
+	.list-container{
+		width: 50%;
+	}
+
+	.up{
+		color: green;
+	}
+
+	.down{
+		color: red;
+	}
+
+	.active{
+		background-color: #dddddd;
+	}
+
+
+	.commit-table{
+		border-collapse: collapse;
+	}
+
+	th, td{
+		width: 33%;
+		padding:2px;
+		border:1px solid black;
+	}
+
+	.author, .date{
+		text-align: center;
+	}
+</style>
