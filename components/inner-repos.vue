@@ -3,34 +3,56 @@
 		<li class="repo-item" 
 		v-for='(repo, repo_index) in repos'
 		@click.self='findRepoItems(event, repo_index)'>
-		{{repo.name}} <span v-if='currentView.trim() != "users"'>-- ({{repo.owner.login}})</span>
+			{{repo.name}} 
+			<span v-if='currentView.trim() != "users"'>-- ({{repo.owner.login}})</span>
 			<div class="repo-items-container active"
 				v-if='cur_repo && (cur_repo.index == repo_index)'>
-				<div class="commits list-container">
-					<h3>commits:</h3>
-					<p>
+<!-- if -->
+				<div class="commits list-container"
+					v-if='commits && commits.length > 0'>
+					<h3>commits: <span>(last 30 or less)</span></h3>
+					<div class="filters">
 						<span> Sort by date</span> 
 						<span class="up" @click.self='sortCommitsByDate()'>UP</span> 
 						<span class="down" @click.self='sortCommitsByDate(event, "reverse")'>DOWN</span> 
 						<span> | Sort by msg:</span> 
 						<span class="up" @click.self='sortCommitsByMsg()'>UP</span> 
 						<span class="down" @click.self='sortCommitsByMsg(event, "reverse")'>DOWN</span> 
-					</p>
+						<slot name='autocomplete'></slot>
+					</div>
+
 					<table class="commit-table">
 						<tr>
-							<th>Author</th>
+							<th>Committer</th>
 							<th>Message</th>
 							<th>date</th>
 						</tr>
 						<tr v-for='item in commits'>
-							<td class="author">{{item.author.login}}</td>
-							<td class="msg">{{item.commit.message}}</td>
-							<td class="date">{{item.commit.author.date}}</td>
+							<td class="author">
+								<span v-if='item.committer'>
+									{{item.committer.login}}
+								</span>
+								<span v-if='!item.committer'>
+									{{item.commit.author.name}}
+								</span>
+							</td>
+							<td class="msg">
+								<span>{{item.commit.message}}</span>
+							</td>
+							<td class="date">
+								<span>{{item.commit.author.date}}</span>
+							</td>
 						</tr>
 					</table>
 				</div>
+<!-- else -->
+				<div class="commits list-container"
+					v-if='!commits || commits.length == 0'>
+					<h3>there are no commits in repository</h3>
+				</div>
 
-				<div class="branches list-container">
+				<div class="branches list-container"
+					v-if='branches && branches.length > 0'>
 					<h3>branches:</h3>
 					<ul class="branches-list">
 						<li class="branch-item" 
@@ -130,13 +152,22 @@
 		background-color: #dddddd;
 	}
 
+	.commits .filters{
+		margin: 10px 0;
+		border: 1px solid black;
+		padding: 5px;
+	}
+
+	.commits .filters p{
+		margin: 2px 0;
+	}
 
 	.commit-table{
 		border-collapse: collapse;
 	}
 
 	th, td{
-		width: 33%;
+		width: 30%;
 		padding:2px;
 		border:1px solid black;
 	}

@@ -4,6 +4,7 @@ var searcherComponent = require('./components/searcher.js');
 var repositories = require('./components/repositories.js');
 var users = require('./components/users.js');
 var innerRepos = require('./components/inner-repos.js');
+var autocompleteInput = require('./components/autocomplete-input.js');
 
 var app = new Vue({
 	el: '.app',
@@ -13,6 +14,7 @@ var app = new Vue({
 		repositories: repositories,
 		users: users,
 		innerRepos: innerRepos,
+		autocompleteInput: autocompleteInput
 	},
 
 	data: {
