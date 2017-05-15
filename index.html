@@ -13,8 +13,16 @@
 		</searcher-component>
 
 		<component 
+			@get_repos = 'setRepos'
+			@remove_repos = 'removeRepos'
 			:is="currentView"
 			:items='items'>
+			
+			<repos v-if='repos && repos.length != 0'
+			 	 :repos='repos'
+			 	 slot='repos'>	
+			</repos>
+			
 		</component>
 
 	</div>

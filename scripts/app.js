@@ -3,6 +3,7 @@ var search = require('./modules/search.js');
 var searcherComponent = require('./components/searcher.js');
 var repositories = require('./components/repositories.js');
 var users = require('./components/users.js');
+var repos = require('./components/repos.js');
 
 var app = new Vue({
 	el: '.app',
@@ -11,12 +12,15 @@ var app = new Vue({
 		searcherComponent: searcherComponent,
 		repositories: repositories,
 		users: users,
+		repos: repos,
 	},
 
 	data: {
 		search_params: {},
 		items: null,
 		currentView: null,
+		cur_repo: null,
+		repos: null,
 	},
 
 	methods: {
@@ -24,6 +28,12 @@ var app = new Vue({
 			this.search_params = param; //value, input, language, fields, sorts
 			search();
 		},
+		setRepos: function(repos) {
+			this.repos = repos;	
+		},
+		removeRepos: function() {
+			this.repos = null;
+		}
 	},
 	created: function() {
 		search = search(this);
