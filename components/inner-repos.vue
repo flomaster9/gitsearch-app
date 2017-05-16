@@ -4,7 +4,7 @@
 		v-for='(repo, repo_index) in repos'
 		@click.self='findRepoItems(event, repo_index)'>
 			{{repo.name}} 
-			<span v-if='currentView.trim() != "users"'>-- ({{repo.owner.login}})</span>
+			<span v-if='currentView.trim() != "users"'>-- ({{repo.owner.login}})</span> -- STARS:{{repo.stargazers_count}}
 			<div class="repo-items-container active"
 				v-if='cur_repo && (cur_repo.index == repo_index)'>
 <!-- if -->
