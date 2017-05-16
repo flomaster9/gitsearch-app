@@ -14,7 +14,7 @@ var app = new Vue({
 		repositories: repositories,
 		users: users,
 		innerRepos: innerRepos,
-		autocompleteInput: autocompleteInput
+		autocompleteInput: autocompleteInput,
 	},
 
 	data: {
@@ -23,6 +23,8 @@ var app = new Vue({
 		currentView: null,
 		cur_repo: null,
 		repos: null,
+		committers: null,
+		commitAuthors: null,
 	},
 
 	methods: {
@@ -32,6 +34,12 @@ var app = new Vue({
 		},
 		setRepos: function(repos) {
 			this.repos = repos;	
+		},
+		setCommitters: function(committers) {
+			this.committers = committers;
+		},
+		setAuthors: function(commit_authors) {
+			this.commitAuthors = commit_authors;
 		},
 		removeRepos: function() {
 			this.repos = null;

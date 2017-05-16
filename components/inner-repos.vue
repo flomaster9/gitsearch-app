@@ -21,13 +21,14 @@
 						<slot name='autocomplete'></slot>
 					</div>
 
-					<table class="commit-table">
+					<table class="commit-table" @click='filterCommitsByAuthors'>
 						<tr>
 							<th>Committer</th>
 							<th>Message</th>
 							<th>date</th>
 						</tr>
-						<tr v-for='item in commits'>
+						<tr v-for='item in commits' 
+							v-if='filterCommitsByAuthors(event, item)'>
 							<td class="author">
 								<span v-if='item.committer'>
 									{{item.committer.login}}
@@ -68,15 +69,48 @@
 
 <script>
 	module.exports = {
-		props: ['repos', 'currentView'],
+		props: ['repos', 'currentView', 'commitAuthors'],
 		data: function() {
 			return {
 				commits: [],
 				branches: [],
 				cur_repo: null,
+				committers: [],
 			}
 		},
 		methods: {
+
+			findCommitters: function(self) { //for autocomplete
+				this.committers = [];
+
+				var temp = !!this.commits[0].committer ?
+					this.commits[0].committer.login : this.commits[0].commit.author.name;
+
+				var can_save = true;
+
+				self.committers.push(temp);
+
+				this.commits.forEach(function(commit) {					//этот монстр проверяет
+					can_save = true;									//есть ли в массиве this.committers
+																		//текущий автор
+					self.committers.forEach(function(committer) {		//если автор уже есть то ничего не делает,
+																		//если его нету то проверяет существует ли вообще 
+						temp = !!commit.committer ? 					// <=== обьект committer в комите
+							commit.committer.login : commit.commit.author.name; //полюбому что - то сохраняем
+
+						if (committer.trim() == temp.trim()) {			//если автора в массиве еще нету, то можем сохранить
+							can_save = false;							//либо логин, либо имя)
+						}
+					})
+
+					if (can_save) 
+						self.committers.push(temp); 
+
+				})
+
+				this.$emit('get_committers', this.committers);			
+			}, 
+
 			findCurRepo: function(index) {
 				this.cur_repo = this.repos[index];
 				this.cur_repo.index = index; 
@@ -89,6 +123,7 @@
 				})
 			  	.done(function( msg ) {
 			    	self.commits = msg;
+			    	self.findCommitters(self);
 				});
 			},
 
@@ -103,7 +138,7 @@
 			},
 
 			findRepoItems: function(event, index) {
-				this.branches = this.commits = null;
+				this.committers = this.branches = this.commits = null;
 				this.findCurRepo(index);
 				this.getRepoCommits(this);
 				this.getRepoBranches(this);
@@ -126,6 +161,23 @@
 						return a.commit.message.toLowerCase() < b.commit.message.toLowerCase() ? 1 : -1;
 					})
 			},
+			filterCommitsByAuthors: function(event, item) {
+				var can_render = false;
+				var author = !!item.committer ? 
+						item.committer.login : item.commit.author.name;
+
+
+				if (!this.commitAuthors){
+					return true;
+				}
+
+				this.commitAuthors.forEach(function(item) {
+					if (item.toLowerCase() == author.toLowerCase()) 
+						can_render = true;
+				})
+
+				return can_render;
+			}
 		},
 	}
 </script>

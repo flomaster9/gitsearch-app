@@ -21,8 +21,13 @@
 			<inner-repos v-if='repos && repos.length != 0'
 			 	 :repos='repos'
 			 	 :current-view='currentView'
+			 	 :commit-authors='commitAuthors'
+			 	 @get_committers = 'setCommitters'
 			 	 slot='repos'>
-			 	 <autocomplete-input slot='autocomplete'>
+			 	 <autocomplete-input
+			 	 	@get_authors = 'setAuthors'
+			 	 	:committers='committers' 
+			 	 	slot='autocomplete'>
 			 	 </autocomplete-input>		
 			</inner-repos>
 		
