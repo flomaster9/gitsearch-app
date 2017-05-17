@@ -25,22 +25,22 @@ module.exports = {
 	data: function() {
 		return {
 			autocomplete: '',
-			show_autocomplete: false,
-			committers_obj: [],
+			showAutocomplete: false,
+			committerObj: [],
 			authors: [],
 		}
 	},
 	methods: {
 		showCommitters: function() {
-			this.show_autocomplete = true;
+			this.showAutocomplete = true;
 		},
 		hideCommitters: function() {
-			this.show_autocomplete = false;
+			this.showAutocomplete = false;
 		},
 		changeCommittersVisible: function() {
 			this.authors = [];
 			var self = this;
-			this.committers_obj.forEach(function(committer) {
+			this.committerObj.forEach(function(committer) {
 				if (committer.author.toLowerCase()
 						.indexOf(self.autocomplete.toLowerCase()) < 0) {
 					committer.can_render = false;
@@ -53,7 +53,7 @@ module.exports = {
 		},
 	},
 	beforeMount: function() {
-		this.committers_obj = this.committers.map(function(item) {
+		this.committerObj = this.committers.map(function(item) {
 			return {
 				author: item,
 				can_render: true,
@@ -64,7 +64,7 @@ module.exports = {
 }
 
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"autocomplete\">\n\t<p>U can find commits by committer(autocomplete):</p>\n\t<div class=\"textfiel\">\n\t\t<input type=\"text\" @focus=\"showCommitters\" @blur=\"hideCommitters\" @input=\"changeCommittersVisible\" v-model=\"autocomplete\">\n\t\t<ul v-if=\"show_autocomplete\">\n\t\t\t<li v-for=\"item in committers_obj\" v-if=\"item.can_render\">\n\t\t\t\t{{item.author}}\n\t\t\t</li>\n\t\t</ul>\n\t</div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"autocomplete\">\n\t<p>U can find commits by committer(autocomplete):</p>\n\t<div class=\"textfiel\">\n\t\t<input type=\"text\" @focus=\"showCommitters\" @blur=\"hideCommitters\" @input=\"changeCommittersVisible\" v-model=\"autocomplete\">\n\t\t<ul v-if=\"showAutocomplete\">\n\t\t\t<li v-for=\"item in committerObj\" v-if=\"item.can_render\">\n\t\t\t\t{{item.author}}\n\t\t\t</li>\n\t\t</ul>\n\t</div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)

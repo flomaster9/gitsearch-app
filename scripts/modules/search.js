@@ -8,28 +8,30 @@ module.exports = function(app) {
 
 		app.currentView = null;
 
-		fields = '+in:' + (app.search_params.fields.length > 0 ? app.search_params.fields.join('|') : 1);
-		language = '+language:' + (app.search_params.language != '' ? app.search_params.language : 1);
+		fields = '+in:' + (app.searchParams.fields.length > 0 ? app.searchParams.fields.join('|') : 1);
+		language = '+language:' + (app.searchParams.language != '' ? app.searchParams.language : 1);
 
-		if (app.search_params.value != 'users') 
-			sorts = '+sort:' + (app.search_params.sorts.length > 0 ? app.search_params.sorts.join('|') : 1);
+		if (app.searchParams.value != 'users') 
+			sorts = '+sort:' + (app.searchParams.sorts.length > 0 ? app.searchParams.sorts.join('|') : 1);
 	}
 
 	//search params : value, input, language, fields, sorts
 
 	var findInfo = function() {
-		$.ajax({
-			//https://api.github.com/search/users?q=INPUT+in:login|fullname+language:0
-		  	url: 'https://api.github.com/search/' 
-		  			+ app.search_params.value + '?q=' 
-		  								+ app.search_params.input 
-		  									+ fields  + sorts  + language
-		})
-	  	.done(function(msg) {
-	   		app.items = msg.items;
-	   		app.currentView = app.search_params.value == 'users' ? 
+
+		var url = 'https://api.github.com/search/' 
+		  			+ app.searchParams.value + '?q=' 
+		  								+ app.searchParams.input 
+		  									+ fields  + sorts  + language;
+
+		app.$http.get(url).then(function(responce) {
+			app.items = responce.body.items;
+	   		app.currentView = app.searchParams.value == 'users' ? 
 	  			 'users' : 'repositories'; 
-		});
+
+		}, function(error) {
+			console.log('error');
+		})
 	}
 
 	return function() {

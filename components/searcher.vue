@@ -2,35 +2,35 @@
 		<div class="search">
 			<h2>Search: </h2>
 			<div class="search-params">
-				<input @change='setDefaultParams' type="radio" name="search-params" value="users" v-model='search_params.value'>
+				<input @change='setDefaultParams' type="radio" name="search-params" value="users" v-model='searchParams.value'>
 				<label>Username</label>
 
-				<input @change='setDefaultParams' type="radio" name="search-params" value="repositories" v-model='search_params.value'>
+				<input @change='setDefaultParams' type="radio" name="search-params" value="repositories" v-model='searchParams.value'>
 				<label for="">Repository</label>
 			</div>
 			<span>Sort filters:</span>
-			<div class="filters" v-if='search_params.value == "users"'>
-				<input type="checkbox" v-model='search_params.fields' value="login">
+			<div class="filters" v-if='searchParams.value == "users"'>
+				<input type="checkbox" v-model='searchParams.fields' value="login">
 				<label for="">login</label>
-				<input type="checkbox" v-model='search_params.fields' value="fullname">
+				<input type="checkbox" v-model='searchParams.fields' value="fullname">
 				<label for="">fullname</label>
 				<br>
 				<label for="">language</label>
-				<input v-model='search_params.language' type="text" placeholder="language">
+				<input v-model='searchParams.language' type="text" placeholder="language">
 			</div>
-			<div class="filters" v-if='search_params.value == "repositories"'>
-				<input type="checkbox" v-model='search_params.fields' value="name">
+			<div class="filters" v-if='searchParams.value == "repositories"'>
+				<input type="checkbox" v-model='searchParams.fields' value="name">
 				<label for="">name</label>
-				<input type="checkbox" v-model='search_params.fields' value="description">
+				<input type="checkbox" v-model='searchParams.fields' value="description">
 				<label for="">description</label>
-				<input type="checkbox" v-model='search_params.sorts' value="stars">
+				<input type="checkbox" v-model='searchParams.sorts' value="stars">
 				<label for="">stars (order desc)</label>
 				<br>
 				<label for="">language</label>
-				<input type="text" v-model='search_params.language' placeholder="language">
+				<input type="text" v-model='searchParams.language' placeholder="language">
 			</div>	
 			<br>
-			<span>input:</span> <input v-model='search_params.input' type="text">
+			<span>input:</span> <input v-model='searchParams.input' type="text">
 			<input type="submit" @click.prevent='search'>
 		</div>
 </template>
@@ -39,7 +39,7 @@
 	module.exports = {
 		data: function() {
 			return{
-				search_params: {
+				searchParams: {
 					value: 'users',
 					input: '',
 					language: '',
@@ -50,15 +50,15 @@
 		},
 		methods: {
 			search: function() {
-				this.$emit('get_search_params', this.search_params);
+				this.$emit('get_search_params', this.searchParams);
 			},
 			setDefaultParams: function() {
-				this.search_params.input = '';
-				this.search_params.language = '';
-				if (this.search_params.value == 'users')
-					this.search_params.fields = ['login', 'fullname']
-				else if (this.search_params.value == 'repositories')
-					this.search_params.fields = ['name', 'description']
+				this.searchParams.input = '';
+				this.searchParams.language = '';
+				if (this.searchParams.value == 'users')
+					this.searchParams.fields = ['login', 'fullname']
+				else if (this.searchParams.value == 'repositories')
+					this.searchParams.fields = ['name', 'description']
 			}
 		}
 	}

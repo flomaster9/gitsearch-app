@@ -7,8 +7,8 @@
 				@blur='hideCommitters'
 				@input='changeCommittersVisible'
 			 	v-model='autocomplete'>
-			<ul v-if='show_autocomplete'>
-				<li v-for='item in committers_obj' 
+			<ul v-if='showAutocomplete'>
+				<li v-for='item in committerObj' 
 					v-if='item.can_render'>
 					{{item.author}}
 				</li>
@@ -23,22 +23,22 @@
 		data: function() {
 			return {
 				autocomplete: '',
-				show_autocomplete: false,
-				committers_obj: [],
+				showAutocomplete: false,
+				committerObj: [],
 				authors: [],
 			}
 		},
 		methods: {
 			showCommitters: function() {
-				this.show_autocomplete = true;
+				this.showAutocomplete = true;
 			},
 			hideCommitters: function() {
-				this.show_autocomplete = false;
+				this.showAutocomplete = false;
 			},
 			changeCommittersVisible: function() {
 				this.authors = [];
 				var self = this;
-				this.committers_obj.forEach(function(committer) {
+				this.committerObj.forEach(function(committer) {
 					if (committer.author.toLowerCase()
 							.indexOf(self.autocomplete.toLowerCase()) < 0) {
 						committer.can_render = false;
@@ -51,7 +51,7 @@
 			},
 		},
 		beforeMount: function() {
-			this.committers_obj = this.committers.map(function(item) {
+			this.committerObj = this.committers.map(function(item) {
 				return {
 					author: item,
 					can_render: true,

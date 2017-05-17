@@ -6,7 +6,7 @@
 			{{repo.name}} 
 			<span v-if='currentView.trim() != "users"'>-- ({{repo.owner.login}})</span> -- STARS:{{repo.stargazers_count}}
 			<div class="repo-items-container active"
-				v-if='cur_repo && (cur_repo.index == repo_index)'>
+				v-if='curRepo && (curRepo.index == repo_index)'>
 <!-- if -->
 				<div class="commits list-container"
 					v-if='commits && commits.length > 0'>
@@ -74,7 +74,7 @@
 			return {
 				commits: [],
 				branches: [],
-				cur_repo: null,
+				curRepo: null,
 				committers: [],
 			}
 		},
@@ -112,36 +112,38 @@
 			}, 
 
 			findCurRepo: function(index) {
-				this.cur_repo = this.repos[index];
-				this.cur_repo.index = index; 
+				this.curRepo = this.repos[index];
+				this.curRepo.index = index; 
 			},
 
-			getRepoCommits: function(self) {
-				$.ajax({
-				  	url: self.cur_repo.commits_url	//удаляю {/sha}
-						.substr(0, self.cur_repo.commits_url.length-6)
+			getRepoCommits: function() {
+				var url = this.curRepo.commits_url	//удаляю {/sha}
+								.substr(0, this.curRepo.commits_url.length-6)
+
+				this.$http.get(url).then(function(responce) {
+					this.commits = responce.body;
+			    	this.findCommitters(this);
+				}, function(error) {
+					console.log(error);
 				})
-			  	.done(function( msg ) {
-			    	self.commits = msg;
-			    	self.findCommitters(self);
-				});
 			},
 
-			getRepoBranches: function(self) {
-				$.ajax({
-				  	url: self.cur_repo.branches_url	//удаляю {/branch}}
-						.substr(0, self.cur_repo.branches_url.length-9)
+			getRepoBranches: function() {
+				var url = this.curRepo.branches_url	//удаляю {/branch}}
+						.substr(0, this.curRepo.branches_url.length-9)
+						
+				this.$http.get(url).then(function(responce) {
+					this.branches = responce.body;
+				}, function(error) {
+					console.log(error);
 				})
-			  	.done(function( msg ) {
-			    	self.branches = msg;
-				});
 			},
 
 			findRepoItems: function(event, index) {
 				this.committers = this.branches = this.commits = null;
 				this.findCurRepo(index);
-				this.getRepoCommits(this);
-				this.getRepoBranches(this);
+				this.getRepoCommits();
+				this.getRepoBranches();
 			},
 			sortCommitsByDate: function(event, reverse) {
 				this.commits.sort((a, b) => {

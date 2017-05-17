@@ -6,6 +6,10 @@ var users = require('./components/users.js');
 var innerRepos = require('./components/inner-repos.js');
 var autocompleteInput = require('./components/autocomplete-input.js');
 
+var vueResource = require('vue-resource');
+
+Vue.use(vueResource);
+
 var app = new Vue({
 	el: '.app',
 
@@ -18,10 +22,9 @@ var app = new Vue({
 	},
 
 	data: {
-		search_params: {},
+		searchParams: {},
 		items: null,
 		currentView: null,
-		cur_repo: null,
 		repos: null,
 		committers: null,
 		commitAuthors: null,
@@ -29,7 +32,7 @@ var app = new Vue({
 
 	methods: {
 		setSearchParams: function(param) {
-			this.search_params = param; //value, input, language, fields, sorts
+			this.searchParams = param; //value, input, language, fields, sorts
 			search();
 		},
 		setRepos: function(repos) {
